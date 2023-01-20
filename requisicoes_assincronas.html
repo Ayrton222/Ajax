@@ -1,0 +1,114 @@
+<!DOCTYPE HTML>
+<html lang="pt-br">
+	<head>
+		<meta charset="UTF-8">
+
+		<title>Requisições assíncronas</title>
+		
+		<!-- bootstrap - link cdn -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	
+        <script>
+            /* Passo 1: importando o objeto, e chamando seus metodos (open e send) e colocando dentro de uma função (requisitarPagina)*/
+            /* Passo 2: lendo a requisição da pagina (readyState) de acordo com o estado do objeto */
+            /* Passo 3: Incluir processo de loading na paginda e verificar quando o (readyState) for igual a 4*/
+            /* Passo 4: Status da requisição (verificar se ela existe (200) ou se nao existe (404) */
+            /* Passo 5: Utilizar o responseText */
+            function requisitarPagina(url){
+
+                //remover qualquer conteudo
+                document.getElementById('conteudo').innerHTML = '';
+
+                //verificar se ja existem algum arquivo loading na pagina
+                if(!document.getElementById('loading')){
+               
+                    //incluindo o gif de loading na pagina
+                    let imgLoading = document.createElement('img'); //criando um elemento (img)
+                    imgLoading.id = 'loading' // criando um id
+                    imgLoading.src = 'loading.gif'; // chamando o arquivo
+                    imgLoading.className = 'rounded mx-auto d-block' //criando a classe 
+
+                    //Incluindo o elemento
+                    document.getElementById('conteudo').appendChild(imgLoading);
+                }
+                
+                //Criando objeto http request
+                let ajax = new XMLHttpRequest();
+
+                //Requisição nao iniciada, state = 0
+                //console.log(ajax.readyState); // -> readyState representa o estado do objeto (ajax) de acordo com a requisição que esta sendo feita
+                
+                // open() -> é responsavel por configurar qual URL será requisitada
+                ajax.open('GET', url);
+
+                //Conexao com servidor, state = 1
+                //console.log(ajax.readyState);
+
+                //onreadystatechange() -> Atirbuto que é executado sempre quando o estado da requisição é modificado
+                ajax.onreadystatechange = function(){
+                    //verificando o readyState
+                   if(ajax.readyState == 4 && ajax.status == 200){
+
+                        //status da requisição
+                        //console.log('O status da requisição é: ', ajax.status);
+                        document.getElementById('conteudo').innerHTML = ajax.responseText;    
+                       
+                        //removendo o loading 
+                        //document.getElementById('loading').remove();
+                   }
+
+                   if(ajax.readyState == 4 && ajax.status == 404){
+
+                        //status da requisição
+                        //console.log('O status da requisição é: ', ajax.status);
+                        document.getElementById('conteudo').innerHTML = '... Tente novamente mais tarde...';
+                        
+                        //removendo o loading 
+                        //document.getElementById('loading').remove();
+                        }
+                }
+                
+                // send() -> para "fazer o open() funcionar"
+                ajax.send();
+            }
+            
+        </script>
+	</head>
+
+	<body>
+
+		<!-- Static navbar -->
+	    <nav class="navbar navbar-light bg-light mb-4">
+	      <div class="container">
+	        <div class="navbar-brand mb-0 h1">
+	        	<h3>Requisições síncronas e assíncronas</h3>
+	        </div>
+	      </div>
+	    </nav>
+
+
+	    <div class="container">
+
+	    	<div class="row mb-2">
+	    		<div class="col-md-4 center"></div>
+	    		<div class="col-md-4 center">
+	    			<a href="#" class="btn btn-primary" onclick="requisitarPagina('pagina_1_conteudo.html')">Página 1</a>
+	    			<a href="#" class="btn btn-primary" onclick="requisitarPagina('pagina_2_conteudo.html')">Página 2</a>
+	    			<a href="#" class="btn btn-primary" onclick="requisitarPagina('pagina_3_conteudo.html')">Página 3</a>
+	    		</div>
+	    		<div class="col-md-4 center"></div>
+	    	</div>
+	    	
+	    	<div class="row">
+		    	<div class="col-md-1"></div>
+
+		    	<div class="col-md-10" id="conteudo">
+		    		
+		    	</div>
+		    		
+				<div class="col-md-1"></div>
+			</div>
+
+		</div>	
+	</body>
+</html>
